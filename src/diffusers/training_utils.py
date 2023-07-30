@@ -5,6 +5,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 import numpy as np
 import torch
+from transformers import CLIPVisionModelWithProjection
 
 from .utils import deprecate, is_transformers_available
 
@@ -129,8 +130,10 @@ class EMAModel:
 
         if self.model_config is None:
             raise ValueError("`save_pretrained` can only be used if `model_config` was defined at __init__.")
-
-        model = self.model_cls.from_config(self.model_config)
+        if self.model_cls == CLIPVisionModelWithProjection:
+            model = self.model_cls(self.model_config)
+        else:
+            model = self.model_cls.from_config(self.model_config)
         state_dict = self.state_dict()
         state_dict.pop("shadow_params", None)
 
