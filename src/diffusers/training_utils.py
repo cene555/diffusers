@@ -134,11 +134,11 @@ class EMAModel:
             model = self.model_cls(self.model_config)
         else:
             model = self.model_cls.from_config(self.model_config)
-        state_dict = self.state_dict()
-        state_dict.pop("shadow_params", None)
-
-        model.register_to_config(**state_dict)
-        self.copy_to(model.parameters())
+            state_dict = self.state_dict()
+            state_dict.pop("shadow_params", None)
+    
+            model.register_to_config(**state_dict)
+            self.copy_to(model.parameters())
         model.save_pretrained(path)
 
     def get_decay(self, optimization_step: int) -> float:
