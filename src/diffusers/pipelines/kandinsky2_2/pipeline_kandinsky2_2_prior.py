@@ -500,14 +500,20 @@ class KandinskyV22PriorPipeline(DiffusionPipeline):
                 prev_timestep = None
             else:
                 prev_timestep = prior_timesteps_tensor[i + 1]
-
-            latents = self.scheduler.step(
-                predicted_image_embedding,
-                timestep=t,
-                sample=latents,
-                generator=generator,
-                prev_timestep=prev_timestep,
-            ).prev_sample
+            try:
+                latents = self.scheduler.step(
+                    predicted_image_embedding,
+                    timestep=t,
+                    sample=latents,
+                    generator=generator,
+                    prev_timestep=prev_timestep,
+                ).prev_sample
+            except:
+                latents = self.scheduler.step(
+                    predicted_image_embedding,
+                    timestep=t,
+                    sample=latents,
+                ).prev_sample
 
         latents = self.prior.post_process_latents(latents)
 
